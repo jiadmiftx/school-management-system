@@ -11,28 +11,29 @@ import (
 type UnitMemberRole string
 
 const (
+	UnitMemberRoleOwner    UnitMemberRole = "owner"
 	UnitMemberRoleAdmin    UnitMemberRole = "admin"
 	UnitMemberRolePengurus UnitMemberRole = "pengurus"
-	UnitMemberRoleWarga    UnitMemberRole = "warga"
-	UnitMemberRoleParent   UnitMemberRole = "parent"
 	UnitMemberRoleStaff    UnitMemberRole = "staff"
+	UnitMemberRoleParent   UnitMemberRole = "parent"
+	UnitMemberRoleAnggota  UnitMemberRole = "anggota" // siswa/member
 )
 
 type UnitMember struct {
-	Id        uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	UserId    uuid.UUID      `gorm:"type:uuid;not null;index"`
-	UnitId    uuid.UUID      `gorm:"type:uuid;not null;index"`
-	Role      UnitMemberRole `gorm:"type:varchar(20);not null;default:'staff'"`
-	IsActive  bool           `gorm:"default:true"`
-	JoinedAt  time.Time
-	InvitedBy *uuid.UUID `gorm:"type:uuid"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Id        uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	UserId    uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
+	UnitId    uuid.UUID      `gorm:"type:uuid;not null;index" json:"unit_id"`
+	Role      UnitMemberRole `gorm:"type:varchar(20);not null;default:'staff'" json:"role"`
+	IsActive  bool           `gorm:"default:true" json:"is_active"`
+	JoinedAt  time.Time      `json:"joined_at"`
+	InvitedBy *uuid.UUID     `gorm:"type:uuid" json:"invited_by"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
-	User    *User `gorm:"foreignKey:UserId"`
-	Unit    *Unit `gorm:"foreignKey:UnitId"`
-	Inviter *User `gorm:"foreignKey:InvitedBy"`
+	User    *User `gorm:"foreignKey:UserId" json:"user,omitempty"`
+	Unit    *Unit `gorm:"foreignKey:UnitId" json:"unit,omitempty"`
+	Inviter *User `gorm:"foreignKey:InvitedBy" json:"inviter,omitempty"`
 }
 
 func (UnitMember) TableName() string { return "unit_members" }

@@ -12,32 +12,32 @@ import (
 	"github.com/google/uuid"
 )
 
-type perumahanMemberController struct {
+type unitMemberController struct {
 	memberUseCase unit_member_use_case.UnitMemberUseCase
 }
 
 func NewUnitMemberController(memberUseCase unit_member_use_case.UnitMemberUseCase) GinUnitMemberController {
-	return &perumahanMemberController{memberUseCase: memberUseCase}
+	return &unitMemberController{memberUseCase: memberUseCase}
 }
 
 // GetMembers godoc
-// @Summary List perumahan members
-// @Description Retrieves a paginated list of members for a perumahan
+// @Summary List unit members
+// @Description Retrieves a paginated list of members for a unit
 // @Tags UnitMember
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param unit_id path string true "Perumahan ID (UUID)"
+// @Param unit_id path string true "Unit ID (UUID)"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(10)
 // @Param role query string false "Filter by role (admin, pengurus, warga, parent, staff)"
 // @Success 200 {object} gin_utils.DataWithPaginateResponse{data=[]UnitMember}
-// @Router /api/v1/companies/{unit_id}/members [get]
-func (ctrl *perumahanMemberController) GetMembers(c *gin.Context) {
-	perumahanIdStr := c.Param("id")
-	perumahanId, err := uuid.Parse(perumahanIdStr)
+// @Router /api/v1/units/{id}/members [get]
+func (ctrl *unitMemberController) GetMembers(c *gin.Context) {
+	unitIdStr := c.Param("id")
+	unitId, err := uuid.Parse(unitIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -56,7 +56,7 @@ func (ctrl *perumahanMemberController) GetMembers(c *gin.Context) {
 		filter.Role = &role
 	}
 
-	members, code, err := ctrl.memberUseCase.GetMembers(c.Request.Context(), perumahanId, filter, paginate)
+	members, code, err := ctrl.memberUseCase.GetMembers(c.Request.Context(), unitId, filter, paginate)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
@@ -77,22 +77,22 @@ func (ctrl *perumahanMemberController) GetMembers(c *gin.Context) {
 }
 
 // GetMember godoc
-// @Summary Get perumahan member by ID
-// @Description Retrieves a single perumahan member
+// @Summary Get unit member by ID
+// @Description Retrieves a single unit member
 // @Tags UnitMember
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param unit_id path string true "Perumahan ID (UUID)"
+// @Param unit_id path string true "Unit ID (UUID)"
 // @Param member_id path string true "Member ID (UUID)"
 // @Success 200 {object} gin_utils.DataResponse{data=UnitMember}
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{unit_id}/members/{member_id} [get]
-func (ctrl *perumahanMemberController) GetMember(c *gin.Context) {
-	perumahanIdStr := c.Param("id")
-	perumahanId, err := uuid.Parse(perumahanIdStr)
+// @Router /api/v1/units/{id}/members/{memberId} [get]
+func (ctrl *unitMemberController) GetMember(c *gin.Context) {
+	unitIdStr := c.Param("id")
+	unitId, err := uuid.Parse(unitIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -103,7 +103,7 @@ func (ctrl *perumahanMemberController) GetMember(c *gin.Context) {
 		return
 	}
 
-	member, code, err := ctrl.memberUseCase.GetMember(c.Request.Context(), perumahanId, memberId)
+	member, code, err := ctrl.memberUseCase.GetMember(c.Request.Context(), unitId, memberId)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
@@ -116,23 +116,23 @@ func (ctrl *perumahanMemberController) GetMember(c *gin.Context) {
 }
 
 // AddMember godoc
-// @Summary Add member to perumahan
-// @Description Adds a user as a member of the perumahan with a specified role
+// @Summary Add member to unit
+// @Description Adds a user as a member of the unit with a specified role
 // @Tags UnitMember
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param unit_id path string true "Perumahan ID (UUID)"
+// @Param unit_id path string true "Unit ID (UUID)"
 // @Param body body AddMemberRequest true "Member data"
 // @Success 201 {object} gin_utils.DataResponse{data=UnitMember}
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 409 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{unit_id}/members [post]
-func (ctrl *perumahanMemberController) AddMember(c *gin.Context) {
-	perumahanIdStr := c.Param("id")
-	perumahanId, err := uuid.Parse(perumahanIdStr)
+// @Router /api/v1/units/{id}/members [post]
+func (ctrl *unitMemberController) AddMember(c *gin.Context) {
+	unitIdStr := c.Param("id")
+	unitId, err := uuid.Parse(unitIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -164,7 +164,7 @@ func (ctrl *perumahanMemberController) AddMember(c *gin.Context) {
 		}
 	}
 
-	member, code, err := ctrl.memberUseCase.AddMember(c.Request.Context(), perumahanId, req, invitedBy)
+	member, code, err := ctrl.memberUseCase.AddMember(c.Request.Context(), unitId, req, invitedBy)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
@@ -177,24 +177,24 @@ func (ctrl *perumahanMemberController) AddMember(c *gin.Context) {
 }
 
 // UpdateMember godoc
-// @Summary Update perumahan member
-// @Description Updates a perumahan member's role or status
+// @Summary Update unit member
+// @Description Updates a unit member's role or status
 // @Tags UnitMember
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param unit_id path string true "Perumahan ID (UUID)"
+// @Param unit_id path string true "Unit ID (UUID)"
 // @Param member_id path string true "Member ID (UUID)"
 // @Param body body UpdateMemberRequest true "Update data"
 // @Success 200 {object} gin_utils.DataResponse{data=UnitMember}
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{unit_id}/members/{member_id} [put]
-func (ctrl *perumahanMemberController) UpdateMember(c *gin.Context) {
-	perumahanIdStr := c.Param("id")
-	perumahanId, err := uuid.Parse(perumahanIdStr)
+// @Router /api/v1/units/{id}/members/{memberId} [put]
+func (ctrl *unitMemberController) UpdateMember(c *gin.Context) {
+	unitIdStr := c.Param("id")
+	unitId, err := uuid.Parse(unitIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -216,7 +216,7 @@ func (ctrl *perumahanMemberController) UpdateMember(c *gin.Context) {
 		IsActive: body.IsActive,
 	}
 
-	member, code, err := ctrl.memberUseCase.UpdateMember(c.Request.Context(), perumahanId, memberId, req)
+	member, code, err := ctrl.memberUseCase.UpdateMember(c.Request.Context(), unitId, memberId, req)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
@@ -229,23 +229,23 @@ func (ctrl *perumahanMemberController) UpdateMember(c *gin.Context) {
 }
 
 // RemoveMember godoc
-// @Summary Remove member from perumahan
-// @Description Removes a user from a perumahan
+// @Summary Remove member from unit
+// @Description Removes a user from a unit
 // @Tags UnitMember
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param unit_id path string true "Perumahan ID (UUID)"
+// @Param unit_id path string true "Unit ID (UUID)"
 // @Param member_id path string true "Member ID (UUID)"
 // @Success 200 {object} gin_utils.MessageResponse
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{unit_id}/members/{member_id} [delete]
-func (ctrl *perumahanMemberController) RemoveMember(c *gin.Context) {
-	perumahanIdStr := c.Param("id")
-	perumahanId, err := uuid.Parse(perumahanIdStr)
+// @Router /api/v1/units/{id}/members/{memberId} [delete]
+func (ctrl *unitMemberController) RemoveMember(c *gin.Context) {
+	unitIdStr := c.Param("id")
+	unitId, err := uuid.Parse(unitIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -256,7 +256,7 @@ func (ctrl *perumahanMemberController) RemoveMember(c *gin.Context) {
 		return
 	}
 
-	code, err := ctrl.memberUseCase.RemoveMember(c.Request.Context(), perumahanId, memberId)
+	code, err := ctrl.memberUseCase.RemoveMember(c.Request.Context(), unitId, memberId)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return

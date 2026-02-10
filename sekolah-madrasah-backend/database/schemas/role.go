@@ -8,19 +8,19 @@ import (
 )
 
 type Role struct {
-	Id             uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	OrganizationId *uuid.UUID     `gorm:"type:uuid;index"`
-	Name           string         `gorm:"type:varchar(50);not null"`
-	DisplayName    string         `gorm:"type:varchar(100);not null"`
-	Type           string         `gorm:"type:varchar(20);not null;default:'custom'"`
-	Level          int            `gorm:"not null;default:0"`
-	Description    string         `gorm:"type:text"`
-	IsDefault      bool           `gorm:"default:false"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      gorm.DeletedAt `gorm:"index"`
+	Id             uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	OrganizationId *uuid.UUID     `gorm:"type:uuid;index" json:"organization_id"`
+	Name           string         `gorm:"type:varchar(50);not null" json:"name"`
+	DisplayName    string         `gorm:"type:varchar(100);not null" json:"display_name"`
+	Type           string         `gorm:"type:varchar(20);not null;default:'custom'" json:"type"`
+	Level          int            `gorm:"not null;default:0" json:"level"`
+	Description    string         `gorm:"type:text" json:"description"`
+	IsDefault      bool           `gorm:"default:false" json:"is_default"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
 
-	Organization *Organization `gorm:"foreignKey:OrganizationId"`
+	Organization *Organization `gorm:"foreignKey:OrganizationId" json:"organization,omitempty"`
 }
 
 func (Role) TableName() string { return "roles" }

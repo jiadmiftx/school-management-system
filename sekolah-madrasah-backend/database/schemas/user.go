@@ -8,19 +8,19 @@ import (
 )
 
 type User struct {
-	Id              uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	Email           string         `gorm:"type:varchar(255);uniqueIndex;not null"`
-	Password        string         `gorm:"type:varchar(255);not null"`
-	FullName        string         `gorm:"type:varchar(100)"`
-	Phone           string         `gorm:"type:varchar(20)"`
-	Avatar          string         `gorm:"type:varchar(500)"`
-	IsSuperAdmin    bool           `gorm:"default:false"`
-	IsActive        bool           `gorm:"default:true"`
-	EmailVerifiedAt *time.Time
-	LastLoginAt     *time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt `gorm:"index"`
+	Id              uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	Email           string         `gorm:"type:varchar(255);uniqueIndex;not null" json:"email"`
+	Password        string         `gorm:"type:varchar(255);not null" json:"-"`
+	FullName        string         `gorm:"type:varchar(100)" json:"full_name"`
+	Phone           string         `gorm:"type:varchar(20)" json:"phone"`
+	Avatar          string         `gorm:"type:varchar(500)" json:"avatar"`
+	IsSuperAdmin    bool           `gorm:"default:false" json:"is_super_admin"`
+	IsActive        bool           `gorm:"default:true" json:"is_active"`
+	EmailVerifiedAt *time.Time     `json:"email_verified_at"`
+	LastLoginAt     *time.Time     `json:"last_login_at"`
+	CreatedAt       time.Time      `json:"created_at"`
+	UpdatedAt       time.Time      `json:"updated_at"`
+	DeletedAt       gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 func (User) TableName() string { return "users" }

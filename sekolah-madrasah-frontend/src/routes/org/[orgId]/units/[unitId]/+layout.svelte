@@ -31,6 +31,30 @@
             iconType: "announcement",
             roles: ["admin", "staff", "pengurus", "warga"],
         },
+        {
+            href: "students",
+            label: "Data Siswa",
+            iconType: "students",
+            roles: ["admin", "staff"],
+        },
+        {
+            href: "teachers",
+            label: "Data Guru",
+            iconType: "teachers",
+            roles: ["admin", "staff"],
+        },
+        {
+            href: "subjects",
+            label: "Mata Pelajaran",
+            iconType: "book",
+            roles: ["admin", "staff"],
+        },
+        {
+            href: "activities",
+            label: "Kegiatan",
+            iconType: "activity",
+            roles: ["admin", "staff"],
+        },
     ];
 
     // Filter menu based on user role
@@ -249,7 +273,7 @@
 </script>
 
 {#if $isAuthenticated}
-    <div class="perumahan-layout dark">
+    <div class="perumahan-layout">
         <!-- Perumahan Sidebar -->
         <aside class="perumahan-sidebar">
             <!-- Back to Perumahans (only for admin/staff) -->
@@ -663,6 +687,76 @@
                                     <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"
                                     ></path>
                                 </svg>
+                            {:else if item.iconType === "students"}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                                </svg>
+                            {:else if item.iconType === "teachers"}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path
+                                        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                                    />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            {:else if item.iconType === "book"}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                    <path
+                                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                                    />
+                                    <path d="M8 7h8" />
+                                    <path d="M8 11h8" />
+                                </svg>
+                            {:else if item.iconType === "activity"}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path
+                                        d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
+                                    />
+                                    <path d="M4 22v-7" />
+                                </svg>
                             {/if}
                         </span>
                         <span class="nav-label">{item.label}</span>
@@ -726,7 +820,7 @@
     .perumahan-layout {
         display: flex;
         min-height: 100vh;
-        background: #f8fafc;
+        background: #f5f5f7;
     }
 
     .perumahan-sidebar {
@@ -761,12 +855,12 @@
 
     .perumahan-header {
         padding: 1.25rem;
-        background: linear-gradient(135deg, #ede9fe 0%, #fae8ff 100%);
+        background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
         border-radius: 1rem;
         display: flex;
         gap: 1rem;
         align-items: center;
-        border: 1px solid #ddd6fe;
+        border: 1px solid #80deea;
     }
 
     .perumahan-logo {
@@ -774,7 +868,7 @@
         height: 56px;
         border-radius: 0.875rem;
         overflow: hidden;
-        background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        background: linear-gradient(135deg, #00ced1 0%, #4dd0e1 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -798,8 +892,8 @@
 
     .perumahan-type {
         font-size: 0.75rem;
-        color: #7c3aed;
-        background: rgba(124, 58, 237, 0.1);
+        color: #0097a7;
+        background: rgba(0, 206, 209, 0.15);
         padding: 0.25rem 0.625rem;
         border-radius: 0.375rem;
         display: inline-block;
@@ -834,9 +928,9 @@
 
     .nav-item.active {
         color: white;
-        background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        background: #00ced1;
         border-color: transparent;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 206, 209, 0.3);
     }
 
     .nav-icon {
@@ -898,7 +992,7 @@
     .perumahan-content {
         flex: 1;
         overflow-y: auto;
-        background: #f8fafc;
+        background: #f5f5f7;
     }
 
     .loading {
@@ -962,7 +1056,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        background: #00ced1;
         display: flex;
         align-items: center;
         justify-content: center;

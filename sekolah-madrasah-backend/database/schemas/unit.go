@@ -10,23 +10,23 @@ import (
 // Unit represents a School or Educational Unit within an Organization.
 // Example: "SMA Negeri 1", "SD Islam Al-Azhar" under organization "Yayasan Al-Azhar"
 type Unit struct {
-	Id             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationId uuid.UUID `gorm:"type:uuid;not null;index"`
-	Name           string    `gorm:"type:varchar(255);not null"`
-	Code           string    `gorm:"type:varchar(50);uniqueIndex;not null"` // Unique unit code (e.g. NPSN)
-	Slug           string    `gorm:"type:varchar(100);uniqueIndex"`         // URL slug for public registration
-	Type           string    `gorm:"type:varchar(50);not null"`             // SD/SMP/SMA/TK/Madrasah
-	Address        string    `gorm:"type:text"`
-	Phone          string    `gorm:"type:varchar(20)"`
-	Email          string    `gorm:"type:varchar(255)"`
-	Logo           string    `gorm:"type:varchar(500)"`
-	IsActive       bool      `gorm:"default:true"`
-	Settings       string    `gorm:"type:jsonb;default:'{}'"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      gorm.DeletedAt `gorm:"index"`
+	Id             uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	OrganizationId uuid.UUID      `gorm:"type:uuid;not null;index" json:"organization_id"`
+	Name           string         `gorm:"type:varchar(255);not null" json:"name"`
+	Code           string         `gorm:"type:varchar(50);uniqueIndex;not null" json:"code"` // Unique unit code (e.g. NPSN)
+	Slug           *string        `gorm:"type:varchar(100);uniqueIndex" json:"slug"`         // URL slug for public registration (nullable)
+	Type           string         `gorm:"type:varchar(50);not null" json:"type"`             // SD/SMP/SMA/TK/Madrasah
+	Address        string         `gorm:"type:text" json:"address"`
+	Phone          string         `gorm:"type:varchar(20)" json:"phone"`
+	Email          string         `gorm:"type:varchar(255)" json:"email"`
+	Logo           string         `gorm:"type:varchar(500)" json:"logo"`
+	IsActive       bool           `gorm:"default:true" json:"is_active"`
+	Settings       string         `gorm:"type:jsonb;default:'{}'" json:"settings"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
 
-	Organization *Organization `gorm:"foreignKey:OrganizationId"`
+	Organization *Organization `gorm:"foreignKey:OrganizationId" json:"organization,omitempty"`
 }
 
 func (Unit) TableName() string { return "units" }

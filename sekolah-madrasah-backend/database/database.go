@@ -95,6 +95,19 @@ func handleMigration(db *gorm.DB, cfg config.DBConfig) {
 				&schemas.Unit{},
 				&schemas.UnitMember{},
 				&schemas.UnitSettings{},
+				// Profiles
+				&schemas.TeacherProfile{},
+				&schemas.StudentProfile{},
+				// Classes
+				&schemas.Class{},
+				&schemas.ClassEnrollment{},
+				// Subjects
+				&schemas.Subject{},
+				&schemas.TeacherSubject{},
+				// Activities
+				&schemas.Activity{},
+				&schemas.ActivityTeacher{},
+				&schemas.ActivityStudent{},
 				// Posts / Announcements
 				&schemas.Post{},
 				&schemas.PostComment{},

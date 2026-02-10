@@ -369,7 +369,7 @@ func (ctrl *userController) DeleteUser(c *gin.Context) {
 
 // GetMyMemberships godoc
 // @Summary Get current user's memberships
-// @Description Returns the authenticated user's organization and perumahan memberships
+// @Description Returns the authenticated user's organization and unit memberships
 // @Tags User
 // @Accept json
 // @Produce json

@@ -22,8 +22,8 @@ func NewUnitController(unitUseCase unit_use_case.UnitUseCase) GinUnitController 
 }
 
 // GetUnit godoc
-// @Summary Get perumahan by ID
-// @Description Retrieves a single perumahan by its UUID
+// @Summary Get unit by ID
+// @Description Retrieves a single unit by its UUID
 // @Tags Unit
 // @Accept json
 // @Produce json
@@ -32,16 +32,16 @@ func NewUnitController(unitUseCase unit_use_case.UnitUseCase) GinUnitController 
 // @Success 200 {object} gin_utils.DataResponse{data=Unit}
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{id} [get]
+// @Router /api/v1/units/{id} [get]
 func (ctrl *unitController) GetUnit(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
-	perumahan, code, err := ctrl.unitUseCase.GetUnit(c.Request.Context(), id)
+	unit, code, err := ctrl.unitUseCase.GetUnit(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
@@ -49,23 +49,23 @@ func (ctrl *unitController) GetUnit(c *gin.Context) {
 
 	c.JSON(code, gin_utils.DataResponse{
 		Message: "success",
-		Data:    toUnitResponse(perumahan),
+		Data:    toUnitResponse(unit),
 	})
 }
 
 // GetUnits godoc
-// @Summary List all perumahans
-// @Description Retrieves a paginated list of perumahans
+// @Summary List all units
+// @Description Retrieves a paginated list of units
 // @Tags Unit
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(10)
-// @Param type query string false "Filter by perumahan type"
+// @Param type query string false "Filter by unit type"
 // @Param organization_id query string false "Filter by organization ID"
 // @Success 200 {object} gin_utils.DataWithPaginateResponse{data=[]Unit}
-// @Router /api/v1/companies [get]
+// @Router /api/v1/units [get]
 func (ctrl *unitController) GetUnits(c *gin.Context) {
 	paginate := &paginate_utils.PaginateData{}
 	queryParams := make(map[string]interface{})
@@ -77,8 +77,8 @@ func (ctrl *unitController) GetUnits(c *gin.Context) {
 	paginate_utils.CheckPaginateFromMap(queryParams, paginate)
 
 	filter := unit_use_case.UnitFilter{}
-	if perumahanType := c.Query("type"); perumahanType != "" {
-		filter.Type = &perumahanType
+	if unitType := c.Query("type"); unitType != "" {
+		filter.Type = &unitType
 	}
 	if orgId := c.Query("organization_id"); orgId != "" {
 		if parsedId, err := uuid.Parse(orgId); err == nil {
@@ -86,14 +86,14 @@ func (ctrl *unitController) GetUnits(c *gin.Context) {
 		}
 	}
 
-	perumahans, code, err := ctrl.unitUseCase.GetUnits(c.Request.Context(), filter, paginate)
+	units, code, err := ctrl.unitUseCase.GetUnits(c.Request.Context(), filter, paginate)
 	if err != nil {
 		c.JSON(code, gin_utils.MessageResponse{Message: err.Error()})
 		return
 	}
 
-	result := make([]Unit, len(perumahans))
-	for i, s := range perumahans {
+	result := make([]Unit, len(units))
+	for i, s := range units {
 		result[i] = toUnitResponse(s)
 	}
 
@@ -119,8 +119,8 @@ type CreateUnitRequestWithOrg struct {
 }
 
 // CreateUnit godoc
-// @Summary Create a new perumahan
-// @Description Creates a new perumahan under an organization
+// @Summary Create a new unit
+// @Description Creates a new unit under an organization
 // @Tags Unit
 // @Accept json
 // @Produce json
@@ -129,7 +129,7 @@ type CreateUnitRequestWithOrg struct {
 // @Success 201 {object} gin_utils.DataResponse{data=Unit}
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 409 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies [post]
+// @Router /api/v1/units [post]
 func (ctrl *unitController) CreateUnit(c *gin.Context) {
 	var req CreateUnitRequestWithOrg
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -153,7 +153,7 @@ func (ctrl *unitController) CreateUnit(c *gin.Context) {
 		return
 	}
 
-	perumahan, code, err := ctrl.unitUseCase.CreateUnit(c.Request.Context(), orgId, unit_use_case.CreateUnitRequest{
+	unit, code, err := ctrl.unitUseCase.CreateUnit(c.Request.Context(), orgId, unit_use_case.CreateUnitRequest{
 		Name:    req.Name,
 		Code:    req.Code,
 		Type:    req.Type,
@@ -168,14 +168,14 @@ func (ctrl *unitController) CreateUnit(c *gin.Context) {
 	}
 
 	c.JSON(code, gin_utils.DataResponse{
-		Message: "perumahan created successfully",
-		Data:    toUnitResponse(perumahan),
+		Message: "unit created successfully",
+		Data:    toUnitResponse(unit),
 	})
 }
 
 // UpdateUnit godoc
-// @Summary Update perumahan
-// @Description Updates an existing perumahan
+// @Summary Update unit
+// @Description Updates an existing unit
 // @Tags Unit
 // @Accept json
 // @Produce json
@@ -185,12 +185,12 @@ func (ctrl *unitController) CreateUnit(c *gin.Context) {
 // @Success 200 {object} gin_utils.DataResponse{data=Unit}
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{id} [put]
+// @Router /api/v1/units/{id} [put]
 func (ctrl *unitController) UpdateUnit(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -221,7 +221,7 @@ func (ctrl *unitController) UpdateUnit(c *gin.Context) {
 		return
 	}
 
-	perumahan, code, err := ctrl.unitUseCase.UpdateUnit(c.Request.Context(), id, unit_use_case.UpdateUnitRequest{
+	unit, code, err := ctrl.unitUseCase.UpdateUnit(c.Request.Context(), id, unit_use_case.UpdateUnitRequest{
 		Name:     req.Name,
 		Address:  req.Address,
 		Phone:    req.Phone,
@@ -235,14 +235,14 @@ func (ctrl *unitController) UpdateUnit(c *gin.Context) {
 	}
 
 	c.JSON(code, gin_utils.DataResponse{
-		Message: "perumahan updated successfully",
-		Data:    toUnitResponse(perumahan),
+		Message: "unit updated successfully",
+		Data:    toUnitResponse(unit),
 	})
 }
 
 // DeleteUnit godoc
-// @Summary Delete perumahan
-// @Description Soft deletes a perumahan
+// @Summary Delete unit
+// @Description Soft deletes a unit
 // @Tags Unit
 // @Accept json
 // @Produce json
@@ -251,12 +251,12 @@ func (ctrl *unitController) UpdateUnit(c *gin.Context) {
 // @Success 200 {object} gin_utils.MessageResponse
 // @Failure 400 {object} gin_utils.MessageResponse
 // @Failure 404 {object} gin_utils.MessageResponse
-// @Router /api/v1/companies/{id} [delete]
+// @Router /api/v1/units/{id} [delete]
 func (ctrl *unitController) DeleteUnit(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid perumahan id"})
+		c.JSON(http.StatusBadRequest, gin_utils.MessageResponse{Message: "invalid unit id"})
 		return
 	}
 
@@ -266,5 +266,5 @@ func (ctrl *unitController) DeleteUnit(c *gin.Context) {
 		return
 	}
 
-	c.JSON(code, gin_utils.MessageResponse{Message: "perumahan deleted successfully"})
+	c.JSON(code, gin_utils.MessageResponse{Message: "unit deleted successfully"})
 }

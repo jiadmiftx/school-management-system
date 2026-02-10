@@ -7,12 +7,12 @@ import (
 )
 
 type Permission struct {
-	Id          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name        string    `gorm:"type:varchar(100);uniqueIndex;not null"`
-	Resource    string    `gorm:"type:varchar(50);not null;index"`
-	Action      string    `gorm:"type:varchar(20);not null"`
-	Description string    `gorm:"type:text"`
-	CreatedAt   time.Time
+	Id          uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	Name        string    `gorm:"type:varchar(100);uniqueIndex;not null" json:"name"`
+	Resource    string    `gorm:"type:varchar(50);not null;index" json:"resource"`
+	Action      string    `gorm:"type:varchar(20);not null" json:"action"`
+	Description string    `gorm:"type:text" json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (Permission) TableName() string { return "permissions" }
